@@ -1,0 +1,27 @@
+import uvicorn
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
+from pydantic import BaseModel
+
+from mylib.bot import scrape
+
+app = FastAPI()
+
+class Wiki(BaseModel):
+    text: str
+    length: int = 1
+
+@app.post('/wiki')
+async def scrape_wiki(wiki: Wiki):
+    result = scrape(name=wiki.text, length=wiki.length)
+    payload = {"wikipage": result}
+    json_compatible_item_data = jsonable_encoder(payload) 
+    return JSONResponse(content=json_compatible_item_data)
+
+@app.get("/")
+async def root():
+    return {"message": "Hello Functions"}
+
+if __name__ == "__main__":
+    uvicorn.run(app, port=8080, host='0.0.0.0')
