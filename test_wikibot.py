@@ -11,5 +11,5 @@ def test_wikibot():
     runner = CliRunner()
     result = runner.invoke(cli, ("--name", "Microsoft", "--length", "1"))
     assert result.exit_code == 0
-    assert len(list(result.output.split(".")[0])) == 1
+    assert len([result.output.split(".")]) == 1
     assert "Microsoft" in result.output
